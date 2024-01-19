@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Wynajem noclegu AirBnB  w mieście Amsterdam</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/OsiedlaAmsterdamu_1.js"></script>
+        <script src="data/DzielniceAmsterdamu_2.js"></script>
+        <script src="data/Cenynieruchomocizametrkwadratowy_3.js"></script>
+        <script src="data/Przystankitramwajowe_4.js"></script>
+        <script src="data/Przystankimetro_5.js"></script>
+        <script src="data/WszystkieAirBnBprzedziaycenowe_6.js"></script>
+        <script src="data/AirBnBapartamentdomnawyczno_7.js"></script>
+        <script src="data/AirBnBpokjhotelowy_8.js"></script>
+        <script src="data/AirBnBpokjwieloosobowy_9.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#f20c1c',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#f20c1c',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_ESRITopo_0');
+        map.getPane('pane_ESRITopo_0').style.zIndex = 400;
+        var layer_ESRITopo_0 = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+            pane: 'pane_ESRITopo_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_ESRITopo_0;
+        map.addLayer(layer_ESRITopo_0);
+        function pop_OsiedlaAmsterdamu_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Dzielnica</th>\
+                        <td>' + (feature.properties['neighbourh'] !== null ? autolinker.link(feature.properties['neighbourh'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_OsiedlaAmsterdamu_1_0() {
+            return {
+                pane: 'pane_OsiedlaAmsterdamu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(183,72,75,0.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_OsiedlaAmsterdamu_1');
+        map.getPane('pane_OsiedlaAmsterdamu_1').style.zIndex = 401;
+        map.getPane('pane_OsiedlaAmsterdamu_1').style['mix-blend-mode'] = 'normal';
+        var layer_OsiedlaAmsterdamu_1 = new L.geoJson(json_OsiedlaAmsterdamu_1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_OsiedlaAmsterdamu_1',
+            layerName: 'layer_OsiedlaAmsterdamu_1',
+            pane: 'pane_OsiedlaAmsterdamu_1',
+            onEachFeature: pop_OsiedlaAmsterdamu_1,
+            style: style_OsiedlaAmsterdamu_1_0,
+        });
+        bounds_group.addLayer(layer_OsiedlaAmsterdamu_1);
+        map.addLayer(layer_OsiedlaAmsterdamu_1);
+        function pop_DzielniceAmsterdamu_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Dzielnica</th>\
+                        <td>' + (feature.properties['Stadsdeel'] !== null ? autolinker.link(feature.properties['Stadsdeel'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_DzielniceAmsterdamu_2_0() {
+            return {
+                pane: 'pane_DzielniceAmsterdamu_2',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(190,207,80,0.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_DzielniceAmsterdamu_2');
+        map.getPane('pane_DzielniceAmsterdamu_2').style.zIndex = 402;
+        map.getPane('pane_DzielniceAmsterdamu_2').style['mix-blend-mode'] = 'normal';
+        var layer_DzielniceAmsterdamu_2 = new L.geoJson(json_DzielniceAmsterdamu_2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_DzielniceAmsterdamu_2',
+            layerName: 'layer_DzielniceAmsterdamu_2',
+            pane: 'pane_DzielniceAmsterdamu_2',
+            onEachFeature: pop_DzielniceAmsterdamu_2,
+            style: style_DzielniceAmsterdamu_2_0,
+        });
+        bounds_group.addLayer(layer_DzielniceAmsterdamu_2);
+        map.addLayer(layer_DzielniceAmsterdamu_2);
+        function pop_Cenynieruchomocizametrkwadratowy_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Cenynieruchomocizametrkwadratowy_3_0(feature) {
+            if (feature.properties['q2wHide_SELECTIE'] >= 3012.000000 && feature.properties['q2wHide_SELECTIE'] <= 4518.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(246,218,252,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['q2wHide_SELECTIE'] >= 4518.000000 && feature.properties['q2wHide_SELECTIE'] <= 5271.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,189,246,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['q2wHide_SELECTIE'] >= 5271.000000 && feature.properties['q2wHide_SELECTIE'] <= 5271.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(200,150,236,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['q2wHide_SELECTIE'] >= 5271.000000 && feature.properties['q2wHide_SELECTIE'] <= 6024.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(177,119,224,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['q2wHide_SELECTIE'] >= 6024.000000 && feature.properties['q2wHide_SELECTIE'] <= 6776.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(158,89,208,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['q2wHide_SELECTIE'] >= 6776.000000 && feature.properties['q2wHide_SELECTIE'] <= 7529.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(133,60,189,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['q2wHide_SELECTIE'] >= 7529.000000 && feature.properties['q2wHide_SELECTIE'] <= 7529.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(90,42,166,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['q2wHide_SELECTIE'] >= 7529.000000 && feature.properties['q2wHide_SELECTIE'] <= 9035.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(37,27,140,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['q2wHide_SELECTIE'] >= 9035.000000 && feature.properties['q2wHide_SELECTIE'] <= 9035.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(46,14,112,1.0)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['q2wHide_SELECTIE'] >= 9035.000000 && feature.properties['q2wHide_SELECTIE'] <= 11294.000000 ) {
+                return {
+                pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(7,1,68,1.0)',
+                interactive: false,
+            }
+            }
+        }
+        map.createPane('pane_Cenynieruchomocizametrkwadratowy_3');
+        map.getPane('pane_Cenynieruchomocizametrkwadratowy_3').style.zIndex = 403;
+        map.getPane('pane_Cenynieruchomocizametrkwadratowy_3').style['mix-blend-mode'] = 'normal';
+        var layer_Cenynieruchomocizametrkwadratowy_3 = new L.geoJson(json_Cenynieruchomocizametrkwadratowy_3, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Cenynieruchomocizametrkwadratowy_3',
+            layerName: 'layer_Cenynieruchomocizametrkwadratowy_3',
+            pane: 'pane_Cenynieruchomocizametrkwadratowy_3',
+            onEachFeature: pop_Cenynieruchomocizametrkwadratowy_3,
+            style: style_Cenynieruchomocizametrkwadratowy_3_0,
+        });
+        bounds_group.addLayer(layer_Cenynieruchomocizametrkwadratowy_3);
+        function pop_Przystankitramwajowe_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nazwa przystanku</th>\
+                        <td>' + (feature.properties['Naam'] !== null ? autolinker.link(feature.properties['Naam'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Linia</strong><br />' + (feature.properties['Lijn'] !== null ? autolinker.link(feature.properties['Lijn'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Opis przystanku</th>\
+                        <td>' + (feature.properties['Label'] !== null ? autolinker.link(feature.properties['Label'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Przystankitramwajowe_4_0() {
+            return {
+                pane: 'pane_Przystankitramwajowe_4',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Przystankitramwajowe_4.svg',
+            iconSize: [15.2, 15.2]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Przystankitramwajowe_4');
+        map.getPane('pane_Przystankitramwajowe_4').style.zIndex = 404;
+        map.getPane('pane_Przystankitramwajowe_4').style['mix-blend-mode'] = 'normal';
+        var layer_Przystankitramwajowe_4 = new L.geoJson(json_Przystankitramwajowe_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Przystankitramwajowe_4',
+            layerName: 'layer_Przystankitramwajowe_4',
+            pane: 'pane_Przystankitramwajowe_4',
+            onEachFeature: pop_Przystankitramwajowe_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Przystankitramwajowe_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Przystankitramwajowe_4);
+        function pop_Przystankimetro_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nazwa stacji</th>\
+                        <td>' + (feature.properties['Naam'] !== null ? autolinker.link(feature.properties['Naam'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Linia</th>\
+                        <td>' + (feature.properties['Lijn'] !== null ? autolinker.link(feature.properties['Lijn'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Opis stacji</th>\
+                        <td>' + (feature.properties['Label'] !== null ? autolinker.link(feature.properties['Label'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Przystankimetro_5_0() {
+            return {
+                pane: 'pane_Przystankimetro_5',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Przystankimetro_5.svg',
+            iconSize: [15.2, 15.2]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Przystankimetro_5');
+        map.getPane('pane_Przystankimetro_5').style.zIndex = 405;
+        map.getPane('pane_Przystankimetro_5').style['mix-blend-mode'] = 'normal';
+        var layer_Przystankimetro_5 = new L.geoJson(json_Przystankimetro_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Przystankimetro_5',
+            layerName: 'layer_Przystankimetro_5',
+            pane: 'pane_Przystankimetro_5',
+            onEachFeature: pop_Przystankimetro_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_Przystankimetro_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Przystankimetro_5);
+        function pop_WszystkieAirBnBprzedziaycenowe_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Miasto</th>\
+                        <td>' + (feature.properties['City'] !== null ? autolinker.link(feature.properties['City'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Cena EUR/noc</th>\
+                        <td>' + (feature.properties['cena'] !== null ? autolinker.link(feature.properties['cena'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Typ</th>\
+                        <td>' + (feature.properties['typ_pokoju'] !== null ? autolinker.link(feature.properties['typ_pokoju'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Maksymalna ilość osób </th>\
+                        <td>' + (feature.properties['person_cap'] !== null ? autolinker.link(feature.properties['person_cap'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ocena gości</th>\
+                        <td>' + (feature.properties['guest_sati'] !== null ? autolinker.link(feature.properties['guest_sati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Liczba sypialni</th>\
+                        <td>' + (feature.properties['liczba_pok'] !== null ? autolinker.link(feature.properties['liczba_pok'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_WszystkieAirBnBprzedziaycenowe_6_0(feature) {
+            if (feature.properties['cena'] >= 128.887118 && feature.properties['cena'] <= 288.707145 ) {
+                return {
+                pane: 'pane_WszystkieAirBnBprzedziaycenowe_6',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(240,251,255,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['cena'] >= 288.707145 && feature.properties['cena'] <= 378.693788 ) {
+                return {
+                pane: 'pane_WszystkieAirBnBprzedziaycenowe_6',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(159,213,222,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['cena'] >= 378.693788 && feature.properties['cena'] <= 504.065803 ) {
+                return {
+                pane: 'pane_WszystkieAirBnBprzedziaycenowe_6',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(89,203,191,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['cena'] >= 504.065803 && feature.properties['cena'] <= 736.296956 ) {
+                return {
+                pane: 'pane_WszystkieAirBnBprzedziaycenowe_6',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,151,145,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['cena'] >= 736.296956 && feature.properties['cena'] <= 7782.907225 ) {
+                return {
+                pane: 'pane_WszystkieAirBnBprzedziaycenowe_6',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(1,53,55,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane_WszystkieAirBnBprzedziaycenowe_6');
+        map.getPane('pane_WszystkieAirBnBprzedziaycenowe_6').style.zIndex = 406;
+        map.getPane('pane_WszystkieAirBnBprzedziaycenowe_6').style['mix-blend-mode'] = 'normal';
+        var layer_WszystkieAirBnBprzedziaycenowe_6 = new L.geoJson(json_WszystkieAirBnBprzedziaycenowe_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_WszystkieAirBnBprzedziaycenowe_6',
+            layerName: 'layer_WszystkieAirBnBprzedziaycenowe_6',
+            pane: 'pane_WszystkieAirBnBprzedziaycenowe_6',
+            onEachFeature: pop_WszystkieAirBnBprzedziaycenowe_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_WszystkieAirBnBprzedziaycenowe_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_WszystkieAirBnBprzedziaycenowe_6);
+        map.addLayer(layer_WszystkieAirBnBprzedziaycenowe_6);
+        function pop_AirBnBapartamentdomnawyczno_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Miasto</th>\
+                        <td>' + (feature.properties['City'] !== null ? autolinker.link(feature.properties['City'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Cena EUR/noc</th>\
+                        <td>' + (feature.properties['cena'] !== null ? autolinker.link(feature.properties['cena'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Typ</th>\
+                        <td>' + (feature.properties['typ_pokoju'] !== null ? autolinker.link(feature.properties['typ_pokoju'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Maksymalna ilość osób</th>\
+                        <td>' + (feature.properties['person_cap'] !== null ? autolinker.link(feature.properties['person_cap'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ocena gości</th>\
+                        <td>' + (feature.properties['guest_sati'] !== null ? autolinker.link(feature.properties['guest_sati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Liczba sypialni</th>\
+                        <td>' + (feature.properties['liczba_pok'] !== null ? autolinker.link(feature.properties['liczba_pok'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_AirBnBapartamentdomnawyczno_7_0() {
+            return {
+                pane: 'pane_AirBnBapartamentdomnawyczno_7',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/AirBnBapartamentdomnawyczno_7.svg',
+            iconSize: [15.2, 15.2]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_AirBnBapartamentdomnawyczno_7');
+        map.getPane('pane_AirBnBapartamentdomnawyczno_7').style.zIndex = 407;
+        map.getPane('pane_AirBnBapartamentdomnawyczno_7').style['mix-blend-mode'] = 'normal';
+        var layer_AirBnBapartamentdomnawyczno_7 = new L.geoJson(json_AirBnBapartamentdomnawyczno_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_AirBnBapartamentdomnawyczno_7',
+            layerName: 'layer_AirBnBapartamentdomnawyczno_7',
+            pane: 'pane_AirBnBapartamentdomnawyczno_7',
+            onEachFeature: pop_AirBnBapartamentdomnawyczno_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_AirBnBapartamentdomnawyczno_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_AirBnBapartamentdomnawyczno_7);
+        function pop_AirBnBpokjhotelowy_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Miasto</th>\
+                        <td>' + (feature.properties['City'] !== null ? autolinker.link(feature.properties['City'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Cena EUR/noc</th>\
+                        <td>' + (feature.properties['cena'] !== null ? autolinker.link(feature.properties['cena'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Typ</th>\
+                        <td>' + (feature.properties['typ_pokoju'] !== null ? autolinker.link(feature.properties['typ_pokoju'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Maksymalna ilość osób</th>\
+                        <td>' + (feature.properties['person_cap'] !== null ? autolinker.link(feature.properties['person_cap'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ocena gości</th>\
+                        <td>' + (feature.properties['guest_sati'] !== null ? autolinker.link(feature.properties['guest_sati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Liczba sypialni</th>\
+                        <td>' + (feature.properties['liczba_pok'] !== null ? autolinker.link(feature.properties['liczba_pok'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_AirBnBpokjhotelowy_8_0() {
+            return {
+                pane: 'pane_AirBnBpokjhotelowy_8',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/AirBnBpokjhotelowy_8.svg',
+            iconSize: [15.2, 15.2]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_AirBnBpokjhotelowy_8');
+        map.getPane('pane_AirBnBpokjhotelowy_8').style.zIndex = 408;
+        map.getPane('pane_AirBnBpokjhotelowy_8').style['mix-blend-mode'] = 'normal';
+        var layer_AirBnBpokjhotelowy_8 = new L.geoJson(json_AirBnBpokjhotelowy_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_AirBnBpokjhotelowy_8',
+            layerName: 'layer_AirBnBpokjhotelowy_8',
+            pane: 'pane_AirBnBpokjhotelowy_8',
+            onEachFeature: pop_AirBnBpokjhotelowy_8,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_AirBnBpokjhotelowy_8_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_AirBnBpokjhotelowy_8);
+        function pop_AirBnBpokjwieloosobowy_9(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Miasto</th>\
+                        <td>' + (feature.properties['City'] !== null ? autolinker.link(feature.properties['City'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Cena EUR/noc</th>\
+                        <td>' + (feature.properties['cena'] !== null ? autolinker.link(feature.properties['cena'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Typ</th>\
+                        <td>' + (feature.properties['typ_pokoju'] !== null ? autolinker.link(feature.properties['typ_pokoju'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Maksymalna ilość osób </th>\
+                        <td>' + (feature.properties['person_cap'] !== null ? autolinker.link(feature.properties['person_cap'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ocena gości</th>\
+                        <td>' + (feature.properties['guest_sati'] !== null ? autolinker.link(feature.properties['guest_sati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Liczba sypialni</th>\
+                        <td>' + (feature.properties['liczba_pok'] !== null ? autolinker.link(feature.properties['liczba_pok'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_AirBnBpokjwieloosobowy_9_0() {
+            return {
+                pane: 'pane_AirBnBpokjwieloosobowy_9',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/AirBnBpokjwieloosobowy_9.svg',
+            iconSize: [15.2, 15.2]
+        }),
+                interactive: true,
+            }
+        }
+        map.createPane('pane_AirBnBpokjwieloosobowy_9');
+        map.getPane('pane_AirBnBpokjwieloosobowy_9').style.zIndex = 409;
+        map.getPane('pane_AirBnBpokjwieloosobowy_9').style['mix-blend-mode'] = 'normal';
+        var layer_AirBnBpokjwieloosobowy_9 = new L.geoJson(json_AirBnBpokjwieloosobowy_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_AirBnBpokjwieloosobowy_9',
+            layerName: 'layer_AirBnBpokjwieloosobowy_9',
+            pane: 'pane_AirBnBpokjwieloosobowy_9',
+            onEachFeature: pop_AirBnBpokjwieloosobowy_9,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_AirBnBpokjwieloosobowy_9_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_AirBnBpokjwieloosobowy_9);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Wynajem noclegu AirBnB  w mieście Amsterdam</h2>';
+            };
+            title.addTo(map);
+            var abstract = new L.Control({'position':'bottomleft'});
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control abstract');
+                this._div.id = 'abstract'
+                    this._div.setAttribute("onmouseenter", "abstract.show()");
+                    this._div.setAttribute("onmouseleave", "abstract.hide()");
+                    this.hide();
+                    return this._div;
+                };
+                abstract.hide = function () {
+                    this._div.classList.remove("abstractUncollapsed");
+                    this._div.classList.add("abstract");
+                    this._div.innerHTML = 'i'
+                }
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = 'Mapa zawiera informacje o ofertach wynajmu noclegu za pośrednictwem serwisu AirBnB w mieście Amsterdam. Mapa uwzględnia również stacje i przystanki sieci komunikacyjnej oraz ukazuje ceny nieruchomosci na rynku Amsterdamu w formie kartogramu.<br /><br />Autor: Agnieszka Pawlaczek, 266239';
+            };
+            abstract.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/AirBnBpokjwieloosobowy_9.png" /> AirBnB pokój wieloosobowy': layer_AirBnBpokjwieloosobowy_9,'<img src="legend/AirBnBpokjhotelowy_8.png" /> AirBnB pokój hotelowy': layer_AirBnBpokjhotelowy_8,'<img src="legend/AirBnBapartamentdomnawyczno_7.png" /> AirBnB apartament/dom na wyłączność': layer_AirBnBapartamentdomnawyczno_7,'Wszystkie AirBnB przedziały cenowe<br /><table><tr><td style="text-align: center;"><img src="legend/WszystkieAirBnBprzedziaycenowe_6_129289EURnoc0.png" /></td><td>129 - 289 EUR/noc</td></tr><tr><td style="text-align: center;"><img src="legend/WszystkieAirBnBprzedziaycenowe_6_289379EURnoc1.png" /></td><td>289 - 379 EUR/noc</td></tr><tr><td style="text-align: center;"><img src="legend/WszystkieAirBnBprzedziaycenowe_6_379504EURnoc2.png" /></td><td>379 - 504 EUR/noc</td></tr><tr><td style="text-align: center;"><img src="legend/WszystkieAirBnBprzedziaycenowe_6_504736EURnoc3.png" /></td><td>504 - 736 EUR/noc</td></tr><tr><td style="text-align: center;"><img src="legend/WszystkieAirBnBprzedziaycenowe_6_736EURnoc4.png" /></td><td>>736 EUR/noc </td></tr></table>': layer_WszystkieAirBnBprzedziaycenowe_6,'<img src="legend/Przystankimetro_5.png" /> Przystanki metro': layer_Przystankimetro_5,'<img src="legend/Przystankitramwajowe_4.png" /> Przystanki tramwajowe': layer_Przystankitramwajowe_4,'Ceny nieruchomości za metr kwadratowy<br /><table><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_30124518EURm20.png" /></td><td>3012 - 4518 EUR/m2</td></tr><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_45185271EURm21.png" /></td><td>4518 - 5271 EUR/m2</td></tr><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_52715271EURm22.png" /></td><td>5271 - 5271 EUR/m2</td></tr><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_52716024EURm23.png" /></td><td>5271 - 6024 EUR/m2</td></tr><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_60246776EURm24.png" /></td><td>6024 - 6776 EUR/m2</td></tr><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_67767529EURm25.png" /></td><td>6776 - 7529 EUR/m2</td></tr><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_75297529EURm26.png" /></td><td>7529 - 7529 EUR/m2</td></tr><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_75299035EURm27.png" /></td><td>7529 - 9035 EUR/m2</td></tr><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_90359035EURm28.png" /></td><td>9035 - 9035 EUR/m2</td></tr><tr><td style="text-align: center;"><img src="legend/Cenynieruchomocizametrkwadratowy_3_903511294EURm29.png" /></td><td>9035 - 11294 EUR/m2</td></tr></table>': layer_Cenynieruchomocizametrkwadratowy_3,'<img src="legend/DzielniceAmsterdamu_2.png" /> Dzielnice Amsterdamu': layer_DzielniceAmsterdamu_2,'<img src="legend/OsiedlaAmsterdamu_1.png" /> Osiedla Amsterdamu': layer_OsiedlaAmsterdamu_1,"ESRI Topo": layer_ESRITopo_0,}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_DzielniceAmsterdamu_2,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Stadsdeel'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"cena": "real"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_cena = document.createElement("div");
+            div_cena.id = "div_cena";
+            div_cena.className = "slider";
+            document.getElementById("menu").appendChild(div_cena);
+            var lab_cena = document.createElement('div');
+            lab_cena.innerHTML  = 'cena: <span id="val_cena"></span>';
+            lab_cena.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_cena);
+            var reset_cena = document.createElement('div');
+            reset_cena.innerHTML = 'clear filter';
+            reset_cena.className = 'filterlabel';
+            lab_cena.className = 'filterlabel';
+            reset_cena.onclick = function() {
+                sel_cena.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_cena);
+            var sel_cena = document.getElementById('div_cena');
+            noUiSlider.create(sel_cena, {
+                connect: true,
+                start: [128.887118318, 7782.90722471],
+                range: {
+                min: 128.887118318,
+                max: 7782.90722471
+                }
+            });
+			var scale = L.control.scale();
+			scale.addTo(map);
+            sel_cena.noUiSlider.on('update', function (values) {
+            val_cena = document.getElementById('val_cena');
+            val_cena.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+        </script>
+    </body>
+</html>
